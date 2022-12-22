@@ -2,8 +2,9 @@
 #include<stdlib.h>
 int StudentNum  = 0 ;
 char StudentStute[7][50] = {"在校","退学","休学","毕业","转专业"};
+//                             0     1      2     3       4
 void Exit();
-void StudentPrintSelect();
+void StudentPrintSelect(int StudentPos);
 void AdminPrintSelect();
 void  InputData();
 int FindStuent(char xuehao[]);
@@ -13,6 +14,11 @@ void ChangeInf();
 void PrintChangeList(int StudentPos);
 void ChangeInf();
 void printStudnetInf(int Postion);
+void PrintYiDongStudet();
+void DengLu();
+void StuentZZY(int Pos);
+void ChangeStute(int Pos ,int zt);
+void ChangeThePassWordStuent(int Pos);
 typedef struct
 {
     //的学号、姓名、性别、年龄、籍贯、系别、专业、班级，修改已知学号的学生信息
@@ -39,6 +45,8 @@ void AdminPrintSelect(){  //管理员的操作面板信息
     printf("输入4:查找已知学号学生信息\n");
     printf("输入5:按班级输出学生信息表\n");
     printf("输入6:查看学籍异动情况\n");
+    printf("输入7:登出（注销）\n");
+    int gflg  = 1;
     do{
         printf("请输入菜单命令:");
         int command;
@@ -63,19 +71,71 @@ void AdminPrintSelect(){  //管理员的操作面板信息
         case 5:
             ShowStuentBnaji();
             break;
+        case 6:
+            PrintYiDongStudet();
+            break;
+        case 7:
+            gflg =0;
+            break;
         default:
             printf("不存在改命令!\n");
             break;
         }
-    }while(1);
+    }while(1&&gflg);
 }
-void StudentPrintSelect(){ // 打印学生客户端的操作信息
+void StudentPrintSelect(int StudentPos){ // 打印学生客户端的操作信息
     printf("输入0:退出程序\n");
     printf("输入1:转专业\n");
     printf("输入2:退学\n");
     printf("输入3:降级\n");
     printf("输入4:休学\n");
     printf("输入5:毕业\n");
+    printf("输入6:修改登陆密码\n");
+    printf("输入7:查看当前学籍信息\n");
+    printf("输入8:登出（注销）\n");
+    int lflg = 1;
+    do
+    {
+        printf("请输入菜单命令:");
+        int command;
+        scanf("%d",&command);
+        switch (command)
+        {
+        case 0:
+            Exit();
+            /* code */
+            break;
+        case 1:
+            StuentZZY(StudentPos);
+            break;
+        case 2:
+            ChangeStute(StudentPos ,1);
+            break;
+        case 3:
+            ChangeStute(StudentPos ,2);
+            break;
+        case 4:
+            ChangeStute(StudentPos ,3);
+            break;
+        case 5:
+            ChangeStute(StudentPos ,4);
+            break;
+        case 6:
+            ChangeThePassWordStuent(StudentPos);
+            break;
+        case 7:
+            printf("%5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s\n\n","学号","姓名","性别","系别","年龄","年级","籍贯","专业","班级","学生状态","该生登录密码");
+            printStudnetInf(StudentPos);
+        case 8:
+            lflg = 0;
+            break;
+        default:
+            printf("不存在改命令!\n");
+            break;
+        }
+
+    } while (1&&lflg);
+    
 }
 
 void Exit(){ //退出程序
@@ -275,10 +335,90 @@ void ShowStuentBnaji(){ // 功能5  按班级输出学生信息表
     }
     printf("--------------------查询完毕！--------------------------\n\n");
 }
-void Test(){
-    AdminPrintSelect();
+void PrintYiDongStudet(){ // 用于打印学籍异动的学生
+    int i;
+    printf("%5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s\n\n","学号","姓名","性别","系别","年龄","年级","籍贯","专业","班级","学生状态","该生登录密码");
+    for(i=0;i<StudentNum;i++){
+        if(Data[i].Stute != 0){
+            printStudnetInf(i);
+        }
+    }
+}
+
+
+void DengLu(){
+    printf("输入1:管理员登陆(默认账号密码 admin admin)\n");
+    printf("输入2:学生登陆(默认账号密码 学号 123456)\n");
+    printf("输入3:退出程序\n");
+    while(1){
+        printf("请输入登陆方式:");
+        int choice;
+        scanf("%d",&choice);
+        char Zhanghao[999];
+        char PassWord[999];
+        scanf("%s%s",Zhanghao,PassWord);
+        if(choice == 1){
+            if(strcmp(Zhanghao,"admin")==0&&strcmp(PassWord,"admin")==0){
+                AdminPrintSelect();
+            }else{
+                printf("账号或者密码错误，请重新输入\n\n");
+            }
+        }else if(choice == 2){
+            int Pos  = FindStuent(Zhanghao);
+            if(Pos != -1){
+                if(strcmp(Data[Pos].PassWord,PassWord)==0){
+                    //登陆成功菜单
+                }else{
+                    printf("密码错误！请重新输入。\n\n");
+                }
+            }else{
+                printf("不存在该学生账号,请重新输入\n\n");
+            }
+
+        }else if(choice ==3){
+            exit(0);
+        }else{
+            printf("未知命令！\n\n");
+        }
+    }
+}
+void StuentZZY(int Pos){ //学生专业
+    printf("输入转到什么专业:\n\n");
+    char zhuanyei[999];
+    scanf("%s",zhuanyei);
+    int flg;
+    printf("确定转专业吗？[0/1]：");
+    scanf("%d",&flg);
+    if(flg){
+        strcpy(Data[Pos].Zhaun,zhuanyei);
+        Data[Pos].Stute = 4;
+        printf("-------------转专业成功---------------");
+    }
+}
+void ChangeStute(int Pos ,int zt){ // 单纯的改变状态
+    printf("确定%s吗?[0/1]:",StudentStute[zt]);
+    int flg;
+    scanf("%d",&flg);
+    if(flg == 1){
+        Data[Pos].Stute = zt;
+        printf("-------------%s成功---------------",StudentStute[zt]);
+    }
+}
+void ChangeThePassWordStuent(int Pos){
+    printf("输入新的密码:");
+    char PassWords[999];
+    scanf("%s",PassWords);
+    printf("确定修改密码吗?[0/1]:");
+    int flg;
+    scanf("%d",&flg);
+    if(flg){
+        strcpy(Data[Pos].PassWord,PassWords);
+        printf("---------------修改密码成功！------------------\n\n");
+    }
 }
 int main(){
-    Test();
+    while(1){
+        DengLu();
+    }
     return 0;
 }
