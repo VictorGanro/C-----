@@ -147,7 +147,7 @@ void StudentPrintSelect(int StudentPos){ // 打印学生客户端的操作信息
 				Data[StudentPos].nianji--; 
 			}
             ChangeStute(StudentPos ,2);
-            clear();
+            //clear();
             break;
         case 4:
             ChangeStute(StudentPos ,3);
