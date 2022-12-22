@@ -7,14 +7,14 @@ typedef struct StudentInf
     //的学号、姓名、性别、年龄、籍贯、系别、专业、班级，修改已知学号的学生信息
     char xuehao[999]; //学号
     char Name[999]; //姓名
-    int Sex; 
-    char Xi[999];
-    int Age;
-    int nianji;
-    char JiGuan[999];
-    char Zhaun[999];
-    char class[999];  
-    
+    int Sex;  //性别
+    char Xi[999]; //系别
+    int Age; //年龄
+    int nianji; // 年级
+    char JiGuan[999]; //籍贯
+    char Zhaun[999]; //专业
+    char class[999];  //班级
+    char Stute[999]; //学生的状态
     /* data */
 }Data[999];
 
